@@ -1,0 +1,23 @@
+{
+    "name": "richard/advance-user-registration",
+    "description": "This is Advance User Registration Plugin",
+    "type": "wordpress-plugin",
+    "license": "GPLv2",
+    "authors": [
+        {
+            "name": "richardmallick",
+            "email": "richardsetu@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "AV_USER_REGISTRATION\\" : ""
+        },
+        "files": [ "Includes/functions.php" ]
+    },
+    "config": {
+        "allow-plugins": false
+    }
+}
