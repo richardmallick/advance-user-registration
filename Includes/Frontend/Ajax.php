@@ -29,12 +29,12 @@ class Ajax {
 
 		$inserted_datas = isset( $_POST['data'] ) && ! empty( $_POST['data'] ) ? filter_input( INPUT_POST, 'data', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY ) : [];
 
-		$output_array = [];
+		$users_array = [];
 		foreach( $inserted_datas as $inserted_data ) {
-			$output_array[$inserted_data['name']] = $inserted_data['value'];
+			$users_array[$inserted_data['name']] = $inserted_data['value'];
 		}
 
-		$errors = avur_form_erro_handling( $output_array );
+		$errors = avur_form_erro_handling( $users_array );
 
 		if ( $errors ) {
 			wp_send_json_success( [
@@ -42,31 +42,28 @@ class Ajax {
 			] );
 		}
 
-		$first_name  = $output_array['avur-first-name'] ? sanitize_text_field( $output_array['avur-first-name'] ) : '';
-		$last_name   = $output_array['avur-last-name'] ? sanitize_text_field( $output_array['avur-last-name'] ) : '';
-		$username    = $output_array['avur-username'] ? sanitize_text_field( $output_array['avur-username'] ) : '';
-		$email       = $output_array['avur-email'] ? sanitize_email( $output_array['avur-email'] ) : '';
-		$phone       = $output_array['avur-phone'] ? sanitize_text_field( $output_array['avur-phone'] ) : '';
-		$password    = $output_array['avur-password'] ? sanitize_text_field( $output_array['avur-password'] ) : '';
-		$website_url = $output_array['avur-website'] ? sanitize_url( $output_array['avur-website'] ) : '';
-		$address     = $output_array['avur-address'] ? sanitize_text_field( $output_array['avur-address'] ) : '';
-
+		$username    = $users_array['avur-username'] ? sanitize_text_field( $users_array['avur-username'] ) : '';
+		$email       = $users_array['avur-email'] ? sanitize_email( $users_array['avur-email'] ) : '';
+		$password    = $users_array['avur-password'] ? sanitize_text_field( $users_array['avur-password'] ) : '';
+		
 		$args = [
 			'user_login'    => $username,
 			'user_email'    => $email,
 			'user_pass'     => $password,
 			'user_nicename' => $username,
-			'user_url'      => $website_url,
 		];
+
+		unset( $users_array['avur-username'] );
+		unset( $users_array['avur-email'] );
+		unset( $users_array['avur-password'] );
+		unset( $users_array['avur-confirm-password'] );
 
 		$user_id = wp_insert_user( $args );
 
 		if ( $user_id ) {
+
 			 // Update user meta with phone number and address
-			 update_user_meta( $user_id, 'first_name', $first_name );
-			 update_user_meta( $user_id, 'last_name', $last_name );
-			 update_user_meta( $user_id, 'phone_number', $phone );
-			 update_user_meta( $user_id, 'address', $address );
+			 update_user_meta( $user_id, 'avur_user_meta_data', $users_array );
 
 			// Update user role to contributor
 			$user_data = array(

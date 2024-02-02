@@ -29,12 +29,8 @@ class UserManagementDashboard {
 
         $column_headers = [
             'ID',
-            'Name',
             'Username',
             'Email',
-            'Phone',
-            'Address',
-            'Website',
             'Role',
             'Action',
         ];
@@ -59,26 +55,17 @@ class UserManagementDashboard {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php 
-                    foreach ($users as $user) :
-                        $f_name  = get_user_meta( $user->ID, 'first_name', true ) ? get_user_meta( $user->ID, 'first_name', true ) : '';
-                        $l_name  = get_user_meta( $user->ID, 'last_name', true ) ? get_user_meta( $user->ID, 'last_name', true ) : '';
-                        $phone   = get_user_meta( $user->ID, 'phone_number', true ) ? get_user_meta( $user->ID, 'phone_number', true ) : '';
-                        $address = get_user_meta( $user->ID, 'address', true ) ? get_user_meta( $user->ID, 'address', true ) : '';
-                    ?>
+                    <?php foreach ($users as $user) : ?>
                         <tr>
                             <td><?php echo intval( $user->ID ); ?></td>
-                            <td><?php echo esc_html( $f_name . ' ' . $l_name ); ?></td>
                             <td><?php echo esc_html( $user->user_login ); ?></td>
                             <td><?php echo esc_html( $user->user_email ); ?></td>
-                            <td><?php echo esc_html( $phone ); ?></td>
-                            <td><?php echo esc_html( $address ); ?></td>
-                            <td><?php echo esc_url( $user->user_url ); ?></td>
                             <td><?php echo implode(', ', $user->roles); ?></td>
                             <td>
                                 <button id="avur-user-edit" dataid="<?php echo intval( $user->ID ); ?>"><?php echo esc_html__('Edit', 'advance-user-registration') ?></button>
                                 <button id="avur-user-approve" dataid="<?php echo intval( $user->ID ); ?>"><?php echo esc_html__('Approve', 'advance-user-registration') ?></button>
                                 <button id="avur-user-deny" dataid="<?php echo intval( $user->ID ); ?>"><?php echo esc_html__('Deny', 'advance-user-registration') ?></button>
+                                <button id="avur-user-delete" dataid="<?php echo intval( $user->ID ); ?>"><?php echo esc_html__('Delete', 'advance-user-registration') ?></button>
                             </td>
                         </tr>
                     <?php endforeach; ?>

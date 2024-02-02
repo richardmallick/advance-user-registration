@@ -15,11 +15,13 @@
                 data: data,
             },
             beforeSend: function () {
+                $('#avur-registration').text('Processing...');
             },
             success: function (response) {
                 if ( response.data.error ) {
                     $('.avur-error-message').show();
                     $('.avur-error-message').html( response.data.error );
+                    $('#avur-registration').text('Register');
                 }
                 if ( response.data.message ) {
                     $('#avur-registration-form').html(`<div class="avur-success-message">${response.data.message}</div>`);

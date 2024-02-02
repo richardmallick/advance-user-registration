@@ -9,23 +9,13 @@
  */
 function avur_form_erro_handling( $output_array ) {
 
-    $first_name       = $output_array['avur-first-name'];
-    $last_name        = $output_array['avur-last-name'];
     $username         = $output_array['avur-username'];
     $email            = $output_array['avur-email'];
-    $phone            = $output_array['avur-phone'];
     $password         = $output_array['avur-password'];
     $confirm_password = $output_array['avur-confirm-password'];
-    $address          = $output_array['avur-address'];
 
     $errors = [];
 
-    if ( empty( $first_name ) ) {
-        $errors[] = esc_html__( 'First Name is Required', 'advance-user-registration'); 
-    }
-    if ( empty( $last_name ) ) {
-        $errors[] = esc_html__( 'Last Name is Required', 'advance-user-registration'); 
-    }
     if ( empty( $username ) ) {
         $errors[] = esc_html__( 'Username is Required', 'advance-user-registration'); 
     }
@@ -34,9 +24,6 @@ function avur_form_erro_handling( $output_array ) {
     } elseif ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
         $errors[] = esc_html__( 'Invalid Email Address', 'advance-user-registration' );
     }
-    if ( empty( $phone ) ) {
-        $errors[] = esc_html__( 'Phone is Required', 'advance-user-registration'); 
-    }
     if ( empty( $password ) ) {
         $errors[] = esc_html__( 'Password is Required', 'advance-user-registration'); 
     }
@@ -44,9 +31,6 @@ function avur_form_erro_handling( $output_array ) {
         $errors[] = esc_html__( 'Confirm Password is Required', 'advance-user-registration'); 
     } elseif ( $password !== $confirm_password ) {
         $errors[] = esc_html__( 'Confirm password should be match with password', 'advance-user-registration'); 
-    }
-    if ( empty( $address ) ) {
-        $errors[] = esc_html__( 'Address is Required', 'advance-user-registration'); 
     }
 
     if ( $errors ) {
