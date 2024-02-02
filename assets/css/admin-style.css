@@ -1,0 +1,60 @@
+/* styles.scss */
+
+.wrap{
+    padding: 50px !important;
+}
+.avur-admin-form-wrap{
+    position: relative;
+    width: 100%;
+    height: auto;
+    min-height: 300px;
+    padding: 40px;
+    box-shadow: 0 0 15px 2px #ddd;
+    box-sizing: border-box;
+}
+#fields-container {
+    margin-bottom: 20px;
+}
+
+.field-wrapper {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.field-wrapper select {
+    width: 200px;
+    margin-right: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.field-wrapper input[type="text"] {
+    width: 250px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.avur-admin-form-wrap button {
+    padding: 8px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.avur-admin-form-wrap button:hover {
+    background-color: #0056b3;
+}
+
+#avur-save-fields{
+    background: #0e8a37;
+    font-size: 18px;
+    position: absolute;
+    right: 30px;
+    bottom: 30px;
+    padding: 10px 30px;
+}

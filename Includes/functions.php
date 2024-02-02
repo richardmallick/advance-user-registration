@@ -67,6 +67,20 @@ function avur_form_erro_handling( $output_array ) {
  * 
  * @since 1.0.0
  */
+function avur_registration_fields_validate($input_array) {
+    foreach ($input_array as $item) {
+        if (in_array('', $item)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * Generate verification token
+ * 
+ * @since 1.0.0
+ */
 function avur_generate_verification_token() {
 
     $random_bytes       = random_bytes(32);

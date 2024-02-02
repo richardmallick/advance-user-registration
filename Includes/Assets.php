@@ -29,7 +29,7 @@ class Assets {
 
 		$current_screen = get_current_screen()->id;
 		
-		if ( 'toplevel_page_advance-user-registration' === $current_screen ) {
+		if ( 'toplevel_page_advance-users' === $current_screen || 'advance-users_page_advance-users-form' === $current_screen || 'advance-users_page_advance-users-settings' === $current_screen ) {
 			// CSS
 			wp_enqueue_style( 'avur-admin-style', AVUR_ASSETS . 'css/admin-style.css', null, filemtime( AVUR_PATH . 'assets/css/admin-style.css' ) );
 			
@@ -40,7 +40,7 @@ class Assets {
 				'avurAdmin',
 				[
 					'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
-					'wpte_nonce' => wp_create_nonce( 'avur-admin-nonce' ),
+					'avur_nonce' => wp_create_nonce( 'avur-admin-nonce' ),
 					'error'      => __( 'Something Went Wrong!', 'advance-user-registration' ),
 				]
 			);

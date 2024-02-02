@@ -85,18 +85,6 @@ class UserManagementDashboard {
                 </tbody>
             </table>
         </div>
-
-        <script>
-            jQuery(document).ready(function($) {
-                // Filter data table
-                $('#user-filter-input').on('input', function() {
-                    var filter = $(this).val().toLowerCase();
-                    $('#user-list-table tbody tr').filter(function() {
-                        $(this).toggle($(this).text().toLowerCase().indexOf(filter) > -1);
-                    });
-                });
-            });
-        </script>
     <?php
     }
 }
