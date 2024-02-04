@@ -97,8 +97,18 @@ class Avur_user_data {
     public function avur_edit_user() {
         global $wp_roles;
 
-        $user_id         = isset( $_GET['user_id'] ) ? sanitize_text_field( $_GET['user_id'] ) : '';
-        $table           = isset( $_GET['table'] ) ? sanitize_text_field( $_GET['table'] ) : '';
+        $user_id  = isset( $_GET['user_id'] ) ? sanitize_text_field( $_GET['user_id'] ) : '';
+        $table    = isset( $_GET['table'] ) ? sanitize_text_field( $_GET['table'] ) : '';
+        if ( ! $table || ! $user_id ) {
+            ?>
+            <div class="wrap">
+                <div class="user-profile-wraper">
+                    <h2><?php echo esc_html__( 'Soemthing went wrong.', 'advance-user-registration' ); ?></h2>
+                </div>
+            </div>
+            <?php
+            return false;
+        }
         if ( 'users' === $table ) {
             $user_data       = get_userdata($user_id);
             $user_meta_datas = get_user_meta( $user_id, 'avur_user_meta_data', true );
