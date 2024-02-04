@@ -24,17 +24,17 @@ class Ajax {
 		$nonce = isset( $_REQUEST['_nonce'] ) && '' !== $_REQUEST['_nonce'] ? sanitize_text_field( wp_unslash( $_REQUEST['_nonce'] ) ) : '';
 	
 		if ( ! wp_verify_nonce( $nonce, 'avur-form-nonce' ) ) {
-			return esc_html__( 'Nonce Varification Failed!', 'advance-user-registration' );
+			return esc_html__( 'Nonce Varification Failed!', 'advanced-user-registration' );
 		}
 
 		$inserted_datas = isset( $_POST['data'] ) && ! empty( $_POST['data'] ) ? filter_input( INPUT_POST, 'data', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY ) : [];
 
-		$users_array = [];
+		$output_array = [];
 		foreach( $inserted_datas as $inserted_data ) {
-			$users_array[$inserted_data['name']] = $inserted_data['value'];
+			$output_array[$inserted_data['name']] = $inserted_data['value'];
 		}
 
-		$errors = avur_form_erro_handling( $users_array );
+		$errors = avur_form_erro_handling( $output_array );
 
 		if ( $errors ) {
 			wp_send_json_success( [
@@ -42,45 +42,38 @@ class Ajax {
 			] );
 		}
 
-		$username    = $users_array['avur-username'] ? sanitize_text_field( $users_array['avur-username'] ) : '';
-		$email       = $users_array['avur-email'] ? sanitize_email( $users_array['avur-email'] ) : '';
-		$password    = $users_array['avur-password'] ? sanitize_text_field( $users_array['avur-password'] ) : '';
-		
-		$args = [
-			'user_login'    => $username,
-			'user_email'    => $email,
-			'user_pass'     => $password,
-			'user_nicename' => $username,
-		];
+		$username    = $output_array['avur-username'] ? sanitize_text_field( $output_array['avur-username'] ) : '';
+		$email       = $output_array['avur-email'] ? sanitize_email( $output_array['avur-email'] ) : '';
+		$password    = $output_array['avur-password'] ? sanitize_text_field( $output_array['avur-password'] ) : '';
 
-		unset( $users_array['avur-username'] );
-		unset( $users_array['avur-email'] );
-		unset( $users_array['avur-password'] );
-		unset( $users_array['avur-confirm-password'] );
+		$hashed_password = password_hash( $password, PASSWORD_DEFAULT );
 
-		$user_id = wp_insert_user( $args );
+		$verification_token  = avur_generate_verification_token();
 
-		if ( $user_id ) {
+		$insert_id = avur_user_data_insert( [
+			'user_login'          => $username,
+			'user_pass'           => $hashed_password,
+			'user_nicename'       => $username,
+			'user_email'          => $email,
+			'user_url'            => '',
+			'user_activation_key' => $verification_token,
+		] );
 
-			 // Update user meta with phone number and address
-			 update_user_meta( $user_id, 'avur_user_meta_data', $users_array );
+		if ( $insert_id ) {
+			// Update user meta.
+			unset( $output_array['avur-username'] );
+			unset( $output_array['avur-email'] );
+			unset( $output_array['avur-password'] );
+			unset( $output_array['avur-confirm-password'] );
+			update_avur_user_meta( $insert_id, 'avur_user_meta_data', $output_array );
 
-			// Update user role to contributor
-			$user_data = array(
-				'ID'   => $user_id,
-				'role' => 'contributor',
-            );
-            wp_update_user( $user_data );
-			 
-			// $verification_token  = avur_generate_verification_token();
 			//avur_send_email_for_verification( $username, $email, $verification_token );
-
 			wp_send_json_success( [
-				'message' => esc_html__( 'Success! An email has been sent to your email address. Please verify your email to gain access.', 'advance-user-registration' ),
+				'message' => esc_html__( 'Success! An email has been sent to your email address. Please verify your email to gain access.', 'advanced-user-registration' ),
 			] );
 		} else {
 			wp_send_json_success( [
-				'error' => esc_html__( 'Something went wrong! Please try again later.', 'advance-user-registration' ),
+				'error' => esc_html__( 'Something went wrong! Please try again later.', 'advanced-user-registration' ),
 			] );
 		}
 	}

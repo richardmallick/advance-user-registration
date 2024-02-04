@@ -7,14 +7,14 @@ namespace AV_USER_REGISTRATION\Includes\Admin\Pages;
  *
  * @since 1.0.0
  */
-class UserRegistrationFormCustomizer {
+class Avur_user_registration {
 
     /**
      * Method custom_user_list_page.
      *
      * @since 1.0.0
      */
-    function add_registration_form_field() {
+    public function add_registration_form_field() {
         $types = [
             'text',
             'number',
@@ -24,9 +24,9 @@ class UserRegistrationFormCustomizer {
        ?>
        <div class="wrap">
            <div class="avur-admin-form-wrap">
+                <h1><?php echo esc_html__( 'Form Fields', 'advance-user-registration' ) ?></h1>
+                <br>
                <form id="avur-admin-from" action="">
-                    <h1><?php echo esc_html__( 'Form Fields', 'advance-user-registration' ) ?></h1>
-                    <br>
                     <div id="fields-container">
                         <?php 
                         foreach( $avur_option_data as $data ):
@@ -42,6 +42,7 @@ class UserRegistrationFormCustomizer {
                             </select>
                             <input type="text" name="label-name" placeholder="Label Name" value="<?php echo esc_html( $data[1] ); ?>">
                             <input type="text" name="field-name" placeholder="Field Name" value="<?php echo esc_html( $data[2] ); ?>">
+                            <span class="avur-admin-from-remove">-</span>
                         </div>
                         <?php endforeach; ?>
                     </div>

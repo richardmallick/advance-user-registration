@@ -37,8 +37,13 @@ class Menu {
 	 * @return void
 	 */
 	public function render_user_management_page() {
-		$userManagementDashboardInstance = new Pages\UserManagementDashboard();
-		$userManagementDashboardInstance->custom_user_list_page();
+		$user_id = isset( $_GET['user_id'] ) ? sanitize_text_field( $_GET['user_id'] ) : '';
+		$avur_user_data_instance = new Pages\Avur_user_data();
+		if ( $user_id ) {
+			$avur_user_data_instance->avur_edit_user();
+		} else {
+			$avur_user_data_instance->custom_user_list_page();
+		}
 	}
 
 	/**
@@ -47,8 +52,8 @@ class Menu {
 	 * @return void
 	 */
 	public function customize_registration_form_page() {
-		$UserRegistrationFormCustomizerInstance = new Pages\UserRegistrationFormCustomizer();
-		$UserRegistrationFormCustomizerInstance->add_registration_form_field();
+		$avur_user_registration = new Pages\Avur_user_registration();
+		$avur_user_registration->add_registration_form_field();
 	}
 
 	/**
@@ -57,8 +62,8 @@ class Menu {
 	 * @return void
 	 */
 	public function advance_users_settings_page() {
-		$UsersSettingsInstance = new Pages\UsersSettings();
-		$UsersSettingsInstance->avur_users_settins();
+		$avur_users_settings = new Pages\Avur_users_settings();
+		$avur_users_settings->avur_users_settins();
 	}
 
 }

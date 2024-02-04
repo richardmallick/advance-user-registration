@@ -1,7 +1,12 @@
 /* styles.scss */
 
-.wrap{
-    padding: 50px !important;
+button{
+    cursor: pointer;
+}
+.wrap {
+    margin: 50px auto;
+    padding: 50px;
+    border-radius: 5px;
 }
 .avur-admin-form-wrap{
     position: relative;
@@ -37,6 +42,20 @@
     border-radius: 5px;
 }
 
+.avur-admin-from-remove{
+    background: #e11d1d;
+    color: #fff;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    margin-left: 10px;
+    line-height: 1;
+    cursor: pointer;
+}
+
 .avur-admin-form-wrap button {
     padding: 8px 10px;
     background-color: #007bff;
@@ -70,4 +89,58 @@ th, td {
 th:first-child,
 td:first-child {
     width: 5%;
+}
+
+.user-profile-wraper{
+    max-width: 70%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.wrap h2 {
+    margin-bottom: 20px;
+}
+
+.form-field {
+    margin-bottom: 20px;
+}
+
+.form-field label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-field input[type="text"],
+.form-field input[type="email"],
+.form-field input[type="password"],
+.form-field select,
+.form-field textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-field select{
+    width: 20%;
+}
+
+.form-field textarea {
+    resize: vertical;
+}
+
+.form-field input[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.form-field input[type="submit"]:hover {
+    background-color: #0056b3;
 }

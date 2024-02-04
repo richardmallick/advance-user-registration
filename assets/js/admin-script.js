@@ -19,12 +19,17 @@
                     </select>
                     <input type="text" name="label-name" placeholder="Label Name">
                     <input type="text" name="field-name" placeholder="Field Name">
+                    <span class="avur-admin-from-remove">-</span>
                 </div>
             `);
         });
 
+        $(document).on('click', '.avur-admin-from-remove', function(){
+            $(this).parent().remove();
+        });
+
         // Save fields data
-        $('#avur-save-fields').click(function(e){
+        $('#avur-save-fields').on('click', function(e){
 
             e.preventDefault();
 
@@ -52,6 +57,72 @@
                 error: function (data) {
                     $('.avur-error-message').show();
                     $('.avur-error-message').html( 'Something went wrong! Please try again later.' );
+                }
+            });
+        });
+
+        // Update Profile data.
+        $('#avur-user-profile-form').on('submit', function(e){
+
+            e.preventDefault();
+
+            data = $(this).serializeArray();
+
+            $.ajax({
+                type: 'POST',
+                url: avurAdmin.ajaxUrl,
+                data: {
+                    action: "avur_user_profile_data_update",
+                    _nonce: avurAdmin.avur_nonce,
+                    data: data,
+                },
+                beforeSend: function () {
+                    $('#avur-profile-update-btn').val('Updating...');
+                },
+                success: function (response) {
+                    if ( response.data.error ) {
+                        alert(response.data.error);
+                    }
+                    if ( response.data.message ) {
+                        alert(response.data.message);
+                        $('#avur-profile-update-btn').val('Update Profile');
+                     }
+                },
+                error: function (data) {
+                    alert('Something went wrong! Please try again later.');
+                }
+            });
+        });
+        
+        // Approve user
+        $('.avur-user-approve').on('click', function(e){
+            e.preventDefault();
+
+            var user_id = $(this).attr('dataid'),
+                This    = this;
+
+            $.ajax({
+                type: 'POST',
+                url: avurAdmin.ajaxUrl,
+                data: {
+                    action: "avur_create_user_after_approve",
+                    _nonce: avurAdmin.avur_nonce,
+                    user_id: user_id,
+                },
+                beforeSend: function () {
+                    $(This).val('Updating...');
+                },
+                success: function (response) {
+                    if ( response.data.error ) {
+                        alert(response.data.error);
+                    }
+                    if ( response.data.message ) {
+                        alert(response.data.message);
+                        location.reload();
+                    }
+                },
+                error: function (data) {
+                    alert('Something went wrong! Please try again later.');
                 }
             });
         });
