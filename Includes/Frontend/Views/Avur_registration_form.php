@@ -7,7 +7,7 @@ namespace AV_USER_REGISTRATION\Includes\Frontend\Views;
  *
  * @since 1.0.0
  */
-trait RegistrationForm{
+trait Avur_registration_form{
 
     public function registration_form() {
         $avur_option_data = get_option( 'avur_user_registration_fields', true );

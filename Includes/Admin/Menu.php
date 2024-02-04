@@ -52,8 +52,8 @@ class Menu {
 	 * @return void
 	 */
 	public function customize_registration_form_page() {
-		$avur_user_registration = new Pages\Avur_user_registration();
-		$avur_user_registration->add_registration_form_field();
+		$avur_add_registration_field = new Pages\Avur_add_registration_field();
+		$avur_add_registration_field->add_registration_form_field();
 	}
 
 	/**

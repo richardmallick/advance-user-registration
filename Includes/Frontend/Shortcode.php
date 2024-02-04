@@ -2,7 +2,7 @@
 
 namespace AV_USER_REGISTRATION\Includes\Frontend;
 
-use AV_USER_REGISTRATION\Includes\Frontend\Views\RegistrationForm;
+use AV_USER_REGISTRATION\Includes\Frontend\Views\Avur_registration_form;
 
 /**
  * Create Shortcode
@@ -11,7 +11,7 @@ use AV_USER_REGISTRATION\Includes\Frontend\Views\RegistrationForm;
  */
 class Shortcode {
 
-	use RegistrationForm;
+	use Avur_registration_form;
 	
 	/**
 	 * Shortcode class constructor

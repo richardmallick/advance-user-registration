@@ -7,7 +7,7 @@ namespace AV_USER_REGISTRATION\Includes\Admin\Pages;
  *
  * @since 1.0.0
  */
-class Avur_user_registration {
+class Avur_add_registration_field {
 
     /**
      * Method custom_user_list_page.
