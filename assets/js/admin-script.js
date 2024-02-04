@@ -126,5 +126,61 @@
                 }
             });
         });
+
+
+        function delete_user( user_id, This, table ) {
+
+            $.ajax({
+                type: 'POST',
+                url: avurAdmin.ajaxUrl,
+                data: {
+                    action: "avur_delete_user",
+                    _nonce: avurAdmin.avur_nonce,
+                    user_id: user_id,
+                    table: table,
+                },
+                beforeSend: function () {
+                    $(This).val('Deleting...');
+                },
+                success: function (response) {
+                    if ( response.data.error ) {
+                        alert(response.data.error);
+                    }
+                    if ( response.data.message ) {
+                        $(This).closest('tr').css('background-color', 'red');
+                        var $tr = $(This).closest('tr');
+                        setTimeout(function() {
+                            $tr.remove();
+                        }, 500);
+                    }
+                },
+                error: function (data) {
+                    alert('Something went wrong! Please try again later.');
+                }
+            });
+        }
+
+        // Delete user from user table
+        $('.approved-avur-user-delete').on('click', function(e){
+            e.preventDefault();
+
+            var user_id = $(this).attr('dataid'),
+                This    = this,
+                table  = 'user';
+            
+            delete_user( user_id, This, table );
+        });
+
+         // Delete user from avur_user table
+        $('.avur-user-delete').on('click', function(e){
+            e.preventDefault();
+
+            var user_id = $(this).attr('dataid'),
+                This    = this,
+                table  = 'avur_user';
+
+            delete_user( user_id, This, table );
+           
+        });
     });
 })(jQuery);

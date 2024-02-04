@@ -228,7 +228,7 @@ function avur_fetch_data_from_avur_user_table( $users_per_page, $offset ) {
  * 
  * @since 1.0.0
  */
-function avur_fetch_data_from_avur_user_table_by_id( $user_id ) {
+function avur_fetch_data_from_user_table_by_id( $user_id ) {
     
     global $wpdb;
 
@@ -238,15 +238,31 @@ function avur_fetch_data_from_avur_user_table_by_id( $user_id ) {
     // Fetch user from database
     $users_array = $wpdb->get_row($query);
 
+    return $users_array;
+
+}
+
+/**
+ * Insert user data to user table by id
+ * 
+ * @since 1.0.0
+ */
+function avur_insert_data_to_user_table_by_id( $user_id ) {
+    
+    global $wpdb;
+
+    // Fetch user from database
+    $users_array = avur_fetch_data_from_user_table_by_id( $user_id );
+
     $args = [
         'user_login'    => $users_array->user_login,
         'user_email'    => $users_array->user_email,
         'user_pass'     => $users_array->user_pass,
         'user_nicename' => $users_array->user_nicename,
     ];
-    
+
     $table_name = $wpdb->prefix . 'users';
-    $wpdb->insert($table_name, $args);
+    $wpdb->insert( $table_name, $args );
     $user_id = $wpdb->insert_id;
     return $user_id;
 }
@@ -260,11 +276,31 @@ function avur_delete_from_avur_user_table_by_id($user_id) {
     global $wpdb;
 
     // Delete the user from the avur_users table
-    $wpdb->delete(
+    $result = $wpdb->delete(
         $wpdb->prefix . 'avur_users',
         array('ID' => $user_id)
     );
+
+    return $result;
 }
+
+/**
+ * Delete user after approve
+ * 
+ * @since 1.0.0
+ */
+function avur_delete_user_by_id( $user_id ) {
+    global $wpdb;
+
+    // Delete the user from the avur_users table
+    $result = $wpdb->delete(
+        $wpdb->prefix . 'users',
+        array('ID' => $user_id)
+    );
+
+    return $result;
+}
+
 
 /**
  * Generate verification token

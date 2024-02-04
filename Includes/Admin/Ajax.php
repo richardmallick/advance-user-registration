@@ -17,6 +17,7 @@ class Ajax {
 		add_action( 'wp_ajax_avur_user_fields', [ $this, 'avur_user_fields' ] );
 		add_action( 'wp_ajax_avur_user_profile_data_update', [ $this, 'avur_user_profile_data_update' ] );
 		add_action( 'wp_ajax_avur_create_user_after_approve', [ $this, 'avur_create_user_after_approve' ] );
+		add_action( 'wp_ajax_avur_delete_user', [ $this, 'avur_delete_user' ] );
 
 	}
 
@@ -141,7 +142,7 @@ class Ajax {
 
 		$avur_user_id = isset( $_POST['user_id'] ) && ! empty( $_POST['user_id'] ) ? sanitize_text_field( $_POST['user_id'] ) : '';
 
-		$user_id = avur_fetch_data_from_avur_user_table_by_id( $avur_user_id );
+		$user_id = avur_insert_data_to_user_table_by_id( $avur_user_id );
 
 		if ( $user_id ) {
 
@@ -161,6 +162,37 @@ class Ajax {
 
 			wp_send_json_success( [
 				'message' => esc_html__( 'Success! The user has been approved.', 'advance-user-registration' ),
+			] );
+		} else {
+			wp_send_json_success( [
+				'error' => esc_html__( 'Something went wrong! Please try again later.', 'advance-user-registration' ),
+			] );
+		}
+	}
+
+	/**
+	 * Method avur_delete_user.
+	 */
+	public function avur_delete_user() {
+
+		$nonce = isset( $_REQUEST['_nonce'] ) && '' !== $_REQUEST['_nonce'] ? sanitize_text_field( wp_unslash( $_REQUEST['_nonce'] ) ) : '';
+	
+		if ( ! wp_verify_nonce( $nonce, 'avur-admin-nonce' ) ) {
+			return esc_html__( 'Nonce Varification Failed!', 'advance-user-registration' );
+		}
+
+		$user_id = isset( $_POST['user_id'] ) && ! empty( $_POST['user_id'] ) ? sanitize_text_field( $_POST['user_id'] ) : '';
+		$table = isset( $_POST['table'] ) && ! empty( $_POST['table'] ) ? sanitize_text_field( $_POST['table'] ) : '';
+
+		if ( 'user' === $table ) {
+			$reslut = avur_delete_user_by_id( $user_id );
+		} else {
+			$reslut = avur_delete_from_avur_user_table_by_id( $user_id );
+		}
+
+		if ( $reslut ) {
+			wp_send_json_success( [
+				'message' => esc_html__( 'Success! The user has been deleted.', 'advance-user-registration' ),
 			] );
 		} else {
 			wp_send_json_success( [
