@@ -20,8 +20,10 @@ class Avur_user_data {
         $offset = 0;
         $users_per_page = -1;
 
-        $approved_users = avur_fetch_data_from_user_table( $users_per_page, $offset );
-        $pending_users  = avur_fetch_data_from_avur_user_table( $users_per_page, $offset );
+        $users = get_users([
+            'number' => $users_per_page,
+            'offset' => $offset
+        ]);
 
         $column_headers = [
             'ID',
@@ -51,35 +53,21 @@ class Avur_user_data {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($approved_users as $user) : ?>
+                    <?php foreach ($users as $user) :?>
                         <tr>
                             <td><?php echo intval( $user->ID ); ?></td>
                             <td><?php echo esc_html( $user->user_login ); ?></td>
                             <td><?php echo esc_html( $user->user_email ); ?></td>
                             <td><?php echo implode(', ', $user->roles); ?></td>
                             <td>
-                                <a href="<?php echo admin_url('admin.php?page=advance-users&user_id=' . intval( $user->ID ) . '&table=users'); ?>"><button class="approved-avur-user-edit"><?php echo esc_html__('Edit', 'advance-user-registration') ?></button></a>
-                                <button dataid="<?php echo intval( $user->ID ); ?>"><?php echo esc_html__('Active', 'advance-user-registration') ?></button>
-                                <button class="approved-avur-user-delete" dataid="<?php echo intval( $user->ID ); ?>"><?php echo esc_html__('Delete', 'advance-user-registration') ?></button>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                    <?php
-                        foreach ( $pending_users as $user ) :
-                            $user_id    = $user['id'] ? intval( $user['id'] ) : '';
-                            $user_name  = $user['user_login'] ? $user['user_login'] : '';
-                            $user_email = $user['user_email'] ? $user['user_email'] : '';
-                     ?>
-                        <tr>
-                            <td><?php echo intval( $user_id ); ?></td>
-                            <td><?php echo esc_html( $user_name ); ?></td>
-                            <td><?php echo esc_html( $user_email ); ?></td>
-                            <td><?php echo ''; ?></td>
-                            <td>
-                                <a href="<?php echo admin_url('admin.php?page=advance-users&user_id=' . intval( $user_id ) . '&table=avur_users'); ?>"><button class="avur-user-edit"><?php echo esc_html__('Edit', 'advance-user-registration') ?></button></a>
-                                <button class="avur-user-approve" dataid="<?php echo intval( $user_id ); ?>"><?php echo esc_html__('Approve', 'advance-user-registration') ?></button>
-                                <button class="avur-user-deny" dataid="<?php echo intval( $user_id ); ?>"><?php echo esc_html__('Deny', 'advance-user-registration') ?></button>
-                                <button class="avur-user-delete" dataid="<?php echo intval( $user_id ); ?>"><?php echo esc_html__('Delete', 'advance-user-registration') ?></button>
+                            <a href="<?php echo admin_url( 'admin.php?page=advance-users&user_id=' . intval( $user->ID ) . '' ); ?>"><button class="avur-user-edit"><?php echo esc_html__( 'Edit', 'advance-user-registration' ) ?></button></a>
+                                <?php if ( $user->roles ) : ?>
+                                    <button class="avur-user-active"><?php echo esc_html__('Active', 'advance-user-registration') ?></button>
+                                <?php else: ?>
+                                <button class="avur-user-approve" dataid="<?php echo intval( $user->ID ); ?>"><?php echo esc_html__('Approve', 'advance-user-registration') ?></button>
+                                <button class="avur-user-deny" dataid="<?php echo intval( $user->ID ); ?>"><?php echo esc_html__('Deny', 'advance-user-registration') ?></button>
+                                <?php endif ?>
+                                <button class="avur-user-delete" dataid="<?php echo intval( $user->ID ); ?>"><?php echo esc_html__('Delete', 'advance-user-registration') ?></button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -98,8 +86,7 @@ class Avur_user_data {
         global $wp_roles;
 
         $user_id  = isset( $_GET['user_id'] ) ? sanitize_text_field( $_GET['user_id'] ) : '';
-        $table    = isset( $_GET['table'] ) ? sanitize_text_field( $_GET['table'] ) : '';
-        if ( ! $table || ! $user_id ) {
+        if ( ! $user_id ) {
             ?>
             <div class="wrap">
                 <div class="user-profile-wraper">
@@ -109,15 +96,10 @@ class Avur_user_data {
             <?php
             return false;
         }
-        if ( 'users' === $table ) {
-            $user_data       = get_userdata($user_id);
-            $user_meta_datas = get_user_meta( $user_id, 'avur_user_meta_data', true );
-            $all_roles       = $wp_roles->get_names();
-        } else {
-            $user_data       = avur_fetch_data_from_user_table_by_id( $user_id );
-            $user_meta_datas = get_avur_user_meta( $user_id, 'avur_user_meta_data', true );
-            $all_roles       = [];
-        }
+
+        $user_data       = get_userdata($user_id);
+        $user_meta_datas = get_user_meta( $user_id, 'avur_user_meta_data', true );
+        $all_roles       = $wp_roles->get_names();
        
         ?>
         <div class="wrap">

@@ -16,7 +16,7 @@ class Ajax {
 
 		add_action( 'wp_ajax_avur_user_fields', [ $this, 'avur_user_fields' ] );
 		add_action( 'wp_ajax_avur_user_profile_data_update', [ $this, 'avur_user_profile_data_update' ] );
-		add_action( 'wp_ajax_avur_create_user_after_approve', [ $this, 'avur_create_user_after_approve' ] );
+		add_action( 'wp_ajax_avur_approve_user', [ $this, 'avur_approve_user' ] );
 		add_action( 'wp_ajax_avur_delete_user', [ $this, 'avur_delete_user' ] );
 
 	}
@@ -130,9 +130,9 @@ class Ajax {
 	}
 
 	/**
-	 * Method avur_create_user_after_approve.
+	 * Method avur_approve_user.
 	 */
-	public function avur_create_user_after_approve() {
+	public function avur_approve_user() {
 
 		$nonce = isset( $_REQUEST['_nonce'] ) && '' !== $_REQUEST['_nonce'] ? sanitize_text_field( wp_unslash( $_REQUEST['_nonce'] ) ) : '';
 	
@@ -140,25 +140,17 @@ class Ajax {
 			return esc_html__( 'Nonce Varification Failed!', 'advance-user-registration' );
 		}
 
-		$avur_user_id = isset( $_POST['user_id'] ) && ! empty( $_POST['user_id'] ) ? sanitize_text_field( $_POST['user_id'] ) : '';
-
-		$user_id = avur_insert_data_to_user_table_by_id( $avur_user_id );
+		$user_id = isset( $_POST['user_id'] ) && ! empty( $_POST['user_id'] ) ? sanitize_text_field( $_POST['user_id'] ) : '';
 
 		if ( $user_id ) {
-
-			// Update user meta.
-			$avur_meta_data = get_avur_user_meta( $avur_user_id, 'avur_user_meta_data', true );
-			update_user_meta( $user_id, 'avur_user_meta_data', $avur_meta_data );
 
 			// Update user role to contributor
 			$user_data = array(
 				'ID'   => $user_id,
 				'role' => 'administrator',
+				'user_activation_key' => '',
             );
             wp_update_user( $user_data );
-
-			// Delete user from avur_users table.
-			avur_delete_from_avur_user_table_by_id( $avur_user_id );
 
 			wp_send_json_success( [
 				'message' => esc_html__( 'Success! The user has been approved.', 'advance-user-registration' ),
@@ -182,13 +174,7 @@ class Ajax {
 		}
 
 		$user_id = isset( $_POST['user_id'] ) && ! empty( $_POST['user_id'] ) ? sanitize_text_field( $_POST['user_id'] ) : '';
-		$table = isset( $_POST['table'] ) && ! empty( $_POST['table'] ) ? sanitize_text_field( $_POST['table'] ) : '';
-
-		if ( 'user' === $table ) {
-			$reslut = avur_delete_user_by_id( $user_id );
-		} else {
-			$reslut = avur_delete_from_avur_user_table_by_id( $user_id );
-		}
+		$reslut  = avur_delete_user_by_id( $user_id );
 
 		if ( $reslut ) {
 			wp_send_json_success( [

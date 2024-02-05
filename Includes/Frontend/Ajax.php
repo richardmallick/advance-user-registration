@@ -46,26 +46,33 @@ class Ajax {
 		$email       = $output_array['avur-email'] ? sanitize_email( $output_array['avur-email'] ) : '';
 		$password    = $output_array['avur-password'] ? sanitize_text_field( $output_array['avur-password'] ) : '';
 
-		$hashed_password = password_hash( $password, PASSWORD_DEFAULT );
-
 		$verification_token  = avur_generate_verification_token();
 
-		$insert_id = avur_user_data_insert( [
+		$userdata = [
 			'user_login'          => $username,
-			'user_pass'           => $hashed_password,
+			'user_pass'           => $password,
 			'user_nicename'       => $username,
 			'user_email'          => $email,
 			'user_url'            => '',
 			'user_activation_key' => $verification_token,
-		] );
+		];
 
-		if ( $insert_id ) {
+		$user_id = wp_insert_user( $userdata );
+
+		if ( $user_id ) {
 			// Update user meta.
 			unset( $output_array['avur-username'] );
 			unset( $output_array['avur-email'] );
 			unset( $output_array['avur-password'] );
 			unset( $output_array['avur-confirm-password'] );
-			update_avur_user_meta( $insert_id, 'avur_user_meta_data', $output_array );
+			update_user_meta( $user_id, 'avur_user_meta_data', $output_array );
+
+			// Update user role to empty
+			$user_data = array(
+				'ID'   => $user_id,
+				'role' => '',
+            );
+            wp_update_user( $user_data );
 
 			//avur_send_email_for_verification( $username, $email, $verification_token );
 			wp_send_json_success( [
