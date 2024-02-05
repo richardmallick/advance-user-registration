@@ -74,7 +74,7 @@ class Ajax {
             );
             wp_update_user( $user_data );
 
-			//avur_send_email_for_verification( $username, $email, $verification_token );
+			avur_send_email_for_verification( $username, $email, $verification_token );
 			wp_send_json_success( [
 				'message' => esc_html__( 'Success! An email has been sent to your email address. Please verify your email to gain access.', 'advanced-user-registration' ),
 			] );

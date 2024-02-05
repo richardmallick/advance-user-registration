@@ -112,19 +112,75 @@ function avur_save_admin_settings_data( $datas ) {
 
 }
 
+/**
+ * Send email to customer for verification
+ * 
+ * @since 1.0.0
+ */
 function avur_send_email_for_verification( $username, $user_email, $verification_token ) {
+
+    $avur_get_settings      = get_option( 'avur_get_settings', true ) ? get_option( 'avur_get_settings', true ) : [];
+    $avur_email_verify_sub  = isset( $avur_get_settings['avur-email-verify-sub'] ) ? $avur_get_settings['avur-email-verify-sub'] : '';
+    $avur_email_verify_body = isset( $avur_get_settings['avur-email-verify-body'] ) ? $avur_get_settings['avur-email-verify-body'] : '';
 
     $verification_url = add_query_arg(
         array(
-            'token' => $verification_token,
-            'username' => $username,
+            'avur_token' => $verification_token
         ),
-        home_url('/verify-email')
+        home_url('/')
     );
 
-    $email_subject = 'Verify Your Email Address';
-    $email_message = 'Thank you for registering. Please click on the following link to verify your email address: ' . $verification_url;
+    $email_subject = $avur_email_verify_sub;
+    $email_message = $avur_email_verify_body . $verification_url;
 
     // Send the verification email to the user
     wp_mail( $user_email, $email_subject, $email_message );
 }
+
+/**
+ * Send email to customer for verification
+ * 
+ * @since 1.0.0
+ */
+add_action('init', 'avur_handle_email_verification');
+function avur_handle_email_verification() {
+    
+    global $wpdb;
+    
+    $verification_token = isset( $_GET['avur_token'] ) && $_GET['avur_token'] ? sanitize_text_field( $_GET['avur_token'] ) : '';
+
+    if ( $verification_token ) {
+        
+        $user_id = $wpdb->get_var($wpdb->prepare(
+            "SELECT ID FROM {$wpdb->users} WHERE user_activation_key = %s",
+            $verification_token
+        ));
+
+        $user = '';
+        if ( $user_id ) {
+            $user = get_userdata( $user_id );
+        }
+
+        if ( $user ) {
+
+            // Update user role to empty
+			$user_data = array(
+				'ID'   => $user_id,
+				'user_activation_key' => '',
+				'user_status' => 1,
+            );
+            wp_update_user( $user_data );
+
+            echo "<script>
+            alert('Your email verification was successful. We will review your details shortly.');
+            window.location.href = '/'
+            </script>";
+        } else {
+            echo "<script>
+            alert('Invalid or expired verification token.');
+            window.location.href = '/'
+            </script>";
+        }
+    }
+}
+

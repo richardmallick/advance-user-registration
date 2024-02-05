@@ -98,7 +98,7 @@ class Avur_user_data {
         }
 
         $user_data       = get_userdata($user_id);
-        $user_meta_datas = get_user_meta( $user_id, 'avur_user_meta_data', true );
+        $user_meta_datas = get_user_meta( $user_id, 'avur_user_meta_data', true ) ? get_user_meta( $user_id, 'avur_user_meta_data', true ) : [];
         $all_roles       = $wp_roles->get_names();
        
         ?>
@@ -122,6 +122,7 @@ class Avur_user_data {
                     <div class="form-field">
                         <label for="avur-user-role"><?php echo esc_html__( 'User Role', 'advance-user-registration' ); ?></label>
                         <select name="avur-user-role" id="avur-user-role">
+                            <option value="">--Select--</option>
                             <?php 
                             foreach( $all_roles as $all_role => $r_name ) {
                                 $selected = in_array( $all_role, $user_data->roles ) ? 'selected' : '';
