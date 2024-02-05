@@ -166,10 +166,10 @@ function avur_handle_email_verification() {
             // Update user role to empty
 			$user_data = array(
 				'ID'   => $user_id,
-				'user_activation_key' => '',
-				'user_status' => 1,
+				'user_activation_key' => ''
             );
             wp_update_user( $user_data );
+            update_user_meta( $user_id, 'avur_is_verify_email', 'YES' );
 
             echo "<script>
             alert('Your email verification was successful. We will review your details shortly.');

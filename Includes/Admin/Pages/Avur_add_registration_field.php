@@ -47,8 +47,8 @@ class Avur_add_registration_field {
                         <?php endforeach; ?>
                     </div>
                </form>
-               <button id="avur-add-new">Add New Field</button>
-               <button id="avur-save-fields">Save</button>
+               <button id="avur-add-new"><?php echo esc_html__( 'Add New Field', 'advance-user-registration' ) ?></button>
+               <button id="avur-save-fields"><?php echo esc_html__( 'Save', 'advance-user-registration' ) ?></button>
            </div>
         </div>
        <?php

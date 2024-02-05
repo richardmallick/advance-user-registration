@@ -30,6 +30,7 @@ class Avur_user_data {
             'Username',
             'Email',
             'Role',
+            'Email Verifyed',
             'Action',
         ];
 
@@ -53,12 +54,16 @@ class Avur_user_data {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($users as $user) :?>
+                    <?php 
+                        foreach ($users as $user) :
+                            $is_varified = get_user_meta( $user->ID, 'avur_is_verify_email', true ) ? get_user_meta( $user->ID, 'avur_is_verify_email', true ) : 'N/A';
+                        ?>
                         <tr>
                             <td><?php echo intval( $user->ID ); ?></td>
                             <td><?php echo esc_html( $user->user_login ); ?></td>
                             <td><?php echo esc_html( $user->user_email ); ?></td>
-                            <td><?php echo implode(', ', $user->roles); ?></td>
+                            <td><?php echo implode( ', ', $user->roles ); ?></td>
+                            <td><?php echo esc_html( $is_varified ); ?></td>
                             <td>
                             <a href="<?php echo admin_url( 'admin.php?page=advance-users&user_id=' . intval( $user->ID ) . '' ); ?>"><button class="avur-user-edit"><?php echo esc_html__( 'Edit', 'advance-user-registration' ) ?></button></a>
                                 <?php if ( $user->roles ) : ?>
