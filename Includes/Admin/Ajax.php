@@ -115,7 +115,7 @@ class Ajax {
 		unset( $users_array['username'] );
 		unset( $users_array['email'] );
 		unset( $users_array['avur-password'] );
-		unset( $users_array['Avur-user-role'] );
+		unset( $users_array['avur-user-role'] );
 		update_user_meta( $user_id, 'avur_user_meta_data', $users_array );
 
 		if ( $update ) {
@@ -154,7 +154,6 @@ class Ajax {
 			$user_data = array(
 				'ID'   => $user_id,
 				'role' => $role,
-				'user_activation_key' => '',
             );
             wp_update_user( $user_data );
 

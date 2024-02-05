@@ -14,6 +14,7 @@ class Ajax {
 	 */
 	public function __construct() {
 		add_action( 'wp_ajax_avur_user_registration', [ $this, 'avur_user_registration' ] );
+		add_action( 'wp_ajax_nopriv_avur_user_registration', [ $this, 'avur_user_registration' ] );
 	}
 
 	/**

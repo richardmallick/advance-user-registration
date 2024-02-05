@@ -18,7 +18,7 @@
                         <option value="checkbox">Checkbox</option>
                     </select>
                     <input type="text" name="label-name" placeholder="Label Name">
-                    <input type="text" name="field-name" placeholder="Field Name">
+                    <input type="text" name="field-name" placeholder="Field Name ( unique )">
                     <span class="avur-admin-from-remove">-</span>
                 </div>
             `);
