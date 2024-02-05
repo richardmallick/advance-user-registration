@@ -56,7 +56,7 @@ class Avur_user_data {
                 <tbody>
                     <?php 
                         foreach ($users as $user) :
-                            $is_varified = get_user_meta( $user->ID, 'avur_is_verify_email', true ) ? get_user_meta( $user->ID, 'avur_is_verify_email', true ) : 'N/A';
+                            $is_varified = get_user_meta( $user->ID, 'avur_is_verify_email', true ) ? get_user_meta( $user->ID, 'avur_is_verify_email', true ) : '';
                         ?>
                         <tr>
                             <td><?php echo intval( $user->ID ); ?></td>
