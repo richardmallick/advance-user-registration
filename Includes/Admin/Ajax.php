@@ -18,6 +18,7 @@ class Ajax {
 		add_action( 'wp_ajax_avur_user_profile_data_update', [ $this, 'avur_user_profile_data_update' ] );
 		add_action( 'wp_ajax_avur_approve_user', [ $this, 'avur_approve_user' ] );
 		add_action( 'wp_ajax_avur_delete_user', [ $this, 'avur_delete_user' ] );
+		add_action( 'wp_ajax_avur_save_settings_data', [ $this, 'avur_save_settings_data' ] );
 
 	}
 
@@ -134,8 +135,13 @@ class Ajax {
 	 */
 	public function avur_approve_user() {
 
-		$nonce = isset( $_REQUEST['_nonce'] ) && '' !== $_REQUEST['_nonce'] ? sanitize_text_field( wp_unslash( $_REQUEST['_nonce'] ) ) : '';
-	
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$nonce             = isset( $_REQUEST['_nonce'] ) && '' !== $_REQUEST['_nonce'] ? sanitize_text_field( wp_unslash( $_REQUEST['_nonce'] ) ) : '';
+		$avur_get_settings = get_option( 'avur_get_settings', true ) ? get_option( 'avur_get_settings', true ) : [];
+		$role              = isset( $avur_get_settings['avur-setting-user-role'] ) && ! empty( $avur_get_settings['avur-setting-user-role'] ) ? $avur_get_settings['avur-setting-user-role'] : 'subscriber';
 		if ( ! wp_verify_nonce( $nonce, 'avur-admin-nonce' ) ) {
 			return esc_html__( 'Nonce Varification Failed!', 'advance-user-registration' );
 		}
@@ -147,7 +153,7 @@ class Ajax {
 			// Update user role to contributor
 			$user_data = array(
 				'ID'   => $user_id,
-				'role' => 'administrator',
+				'role' => $role,
 				'user_activation_key' => '',
             );
             wp_update_user( $user_data );
@@ -167,6 +173,10 @@ class Ajax {
 	 */
 	public function avur_delete_user() {
 
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
 		$nonce = isset( $_REQUEST['_nonce'] ) && '' !== $_REQUEST['_nonce'] ? sanitize_text_field( wp_unslash( $_REQUEST['_nonce'] ) ) : '';
 	
 		if ( ! wp_verify_nonce( $nonce, 'avur-admin-nonce' ) ) {
@@ -185,6 +195,41 @@ class Ajax {
 				'error' => esc_html__( 'Something went wrong! Please try again later.', 'advance-user-registration' ),
 			] );
 		}
+	}
+
+	/**
+	 * Method avur_save_settings_data.
+	 */
+	public function avur_save_settings_data() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$nonce = isset( $_REQUEST['_nonce'] ) && '' !== $_REQUEST['_nonce'] ? sanitize_text_field( wp_unslash( $_REQUEST['_nonce'] ) ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'avur-admin-nonce' ) ) {
+			return esc_html__( 'Nonce Varification Failed!', 'wpte-product-layout' );
+		}
+
+		$inserted_datas = isset( $_POST['data'] ) && ! empty( $_POST['data'] ) ? filter_input( INPUT_POST, 'data', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY ) : [];
+
+		$avur_options_array = [];
+		foreach( $inserted_datas as $inserted_data ) {
+			$avur_options_array[$inserted_data['name']] = $inserted_data['value'];
+		}
+
+		if ( $avur_options_array ) {
+			update_option( 'avur_get_settings', $avur_options_array );
+			
+			wp_send_json_success( [
+				'message' => esc_html__( 'Success! Data has been saved.', 'advance-user-registration' ),
+			] );
+
+		} else {
+			wp_send_json_success( [
+				'error' => esc_html__( 'Something went wrong! Please try again later.', 'advance-user-registration' ),
+			] );
+		}
+
 	}
 
 }

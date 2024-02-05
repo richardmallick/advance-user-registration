@@ -92,6 +92,26 @@ function avur_generate_verification_token() {
     return $verification_token;
 }
 
+/**
+ * Save settings data
+ * 
+ * @since 1.0.0
+ */
+function avur_save_admin_settings_data( $datas ) {
+    
+    $datas = [
+        [
+            'key' => '',
+            'value' => ''
+        ]
+    ];
+
+    foreach( $datas as $data ) {
+        update_option( $data['key'], $data['value'] );
+    }
+
+}
+
 function avur_send_email_for_verification( $username, $user_email, $verification_token ) {
 
     $verification_url = add_query_arg(

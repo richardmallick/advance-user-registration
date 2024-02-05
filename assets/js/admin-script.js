@@ -24,6 +24,7 @@
             `);
         });
 
+        // Remove registration from field
         $(document).on('click', '.avur-admin-from-remove', function(){
             $(this).parent().remove();
         });
@@ -127,7 +128,7 @@
             });
         });
 
-         // Delete user from avur_user table
+         // Delete user from table
         $('.avur-user-delete').on('click', function(e){
             e.preventDefault();
 
@@ -155,6 +156,38 @@
                         setTimeout(function() {
                             $tr.remove();
                         }, 500);
+                    }
+                },
+                error: function (data) {
+                    alert('Something went wrong! Please try again later.');
+                }
+            });
+           
+        });
+         // Delete user from table
+        $('#avur-option-data-form').on('submit', function(e){
+            e.preventDefault();
+
+            var data = $(this).serializeArray();
+
+            $.ajax({
+                type: 'POST',
+                url: avurAdmin.ajaxUrl,
+                data: {
+                    action: "avur_save_settings_data",
+                    _nonce: avurAdmin.avur_nonce,
+                    data: data,
+                },
+                beforeSend: function () {
+                    $('#avur-option-data').val('Updating...');
+                },
+                success: function (response) {
+                    if ( response.data.error ) {
+                        alert(response.data.error);
+                    }
+                    if ( response.data.message ) {
+                        alert(response.data.message);
+                        $('#avur-option-data').val('Update');
                     }
                 },
                 error: function (data) {
