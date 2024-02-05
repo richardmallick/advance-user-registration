@@ -70,7 +70,6 @@ class Avur_user_data {
                                     <button class="avur-user-active"><?php echo esc_html__('Active', 'advance-user-registration') ?></button>
                                 <?php else: ?>
                                 <button class="avur-user-approve" dataid="<?php echo intval( $user->ID ); ?>"><?php echo esc_html__('Approve', 'advance-user-registration') ?></button>
-                                <button class="avur-user-deny" dataid="<?php echo intval( $user->ID ); ?>"><?php echo esc_html__('Deny', 'advance-user-registration') ?></button>
                                 <?php endif ?>
                                 <button class="avur-user-delete" dataid="<?php echo intval( $user->ID ); ?>"><?php echo esc_html__('Delete', 'advance-user-registration') ?></button>
                             </td>

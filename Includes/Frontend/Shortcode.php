@@ -33,7 +33,11 @@ class Shortcode {
 		wp_enqueue_script('avur-public-script');
 
 		ob_start();
-		$this->registration_form();
+		if ( is_user_logged_in() ) {
+			echo "My Account";
+		} else {
+			$this->registration_form();
+		}
 		$data = ob_get_clean();
 
 		return ( $data );
